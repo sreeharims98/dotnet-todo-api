@@ -10,3 +10,7 @@ obj/
 # User-specific IDE files
 *.userosscache
 *.sln.docstates
+
+*.db
+*.db-shm
+*.db-wal

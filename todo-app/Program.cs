@@ -1,10 +1,13 @@
 
+using Microsoft.EntityFrameworkCore;
+using todo_app.Data;
 using todo_app.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<ITodoService, InMemoryTodoService>();
+builder.Services.AddScoped<ITodoService, EfTodoService>();
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Swagger UI support
 builder.Services.AddEndpointsApiExplorer();
