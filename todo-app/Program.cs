@@ -1,7 +1,10 @@
 
+using todo_app.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton<ITodoService, InMemoryTodoService>();
 
 // Add Swagger UI support
 builder.Services.AddEndpointsApiExplorer();
