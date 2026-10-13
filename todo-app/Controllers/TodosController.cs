@@ -19,7 +19,7 @@ namespace todo_app.Controllers
         [HttpGet("{id}")]
         public ActionResult<TodoItem> GetById(int id)
         {
-            var todo = Todos.FirstOrDefault(todo => todo.Id == id);
+            var todo = Todos.FirstOrDefault(t => t.Id == id);
             if (todo == null) return NotFound();
             return Ok(todo);
         }
@@ -28,19 +28,31 @@ namespace todo_app.Controllers
         public ActionResult<TodoItem> Create(TodoItem todo)
         {
             if (string.IsNullOrWhiteSpace(todo.Title))
-                return BadRequest("Title is required");
+            {
+                ModelState.AddModelError(nameof(todo.Title), "Title is required");
+                return ValidationProblem(ModelState);
+            }
+
             todo.Id = _nextId;
             _nextId = _nextId + 1;
             Todos.Add(todo);
-            return StatusCode(201, todo);
+            return CreatedAtAction(nameof(GetById), new { id = todo.Id }, todo);
 
         }
 
         [HttpPut("{id}")]
         public ActionResult<TodoItem> Update(int id, TodoItem todoData)
         {
-            var todo = Todos.FirstOrDefault(todo => todo.Id == id);
+            if (string.IsNullOrWhiteSpace(todoData.Title))
+            {
+                ModelState.AddModelError(nameof(todoData.Title), "Title is required");
+                return ValidationProblem(ModelState);
+            }
+
+            var todo = Todos.FirstOrDefault(t => t.Id == id);
             if (todo == null) return NotFound();
+
+
             todo.Title = todoData.Title;
             todo.Description = todoData.Description;
             todo.IsCompleted = todoData.IsCompleted;
@@ -48,13 +60,13 @@ namespace todo_app.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<TodoItem> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            var todo = Todos.FirstOrDefault(todo => todo.Id == id);
+            var todo = Todos.FirstOrDefault(t => t.Id == id);
             if (todo == null) return NotFound();
 
             Todos.Remove(todo);
-            return Ok();
+            return NoContent();
 
         }
     }

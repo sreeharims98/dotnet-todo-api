@@ -1,6 +1,39 @@
 @todo_app_HostAddress = http://localhost:5044
 
-GET {{todo_app_HostAddress}}/weatherforecast/
+### Get all todos
+GET {{todo_app_HostAddress}}/api/todos
 Accept: application/json
 
-###
+### Create a todo
+POST {{todo_app_HostAddress}}/api/todos
+Content-Type: application/json
+
+{
+  "title": "Learn ASP.NET Core",
+  "description": "Build a todo API"
+}
+
+### Create a todo with an empty title (expect 400)
+POST {{todo_app_HostAddress}}/api/todos
+Content-Type: application/json
+
+{
+  "title": ""
+}
+
+### Get a todo by id
+GET {{todo_app_HostAddress}}/api/todos/1
+Accept: application/json
+
+### Update a todo
+PUT {{todo_app_HostAddress}}/api/todos/1
+Content-Type: application/json
+
+{
+  "title": "Learn ASP.NET Core",
+  "description": "Build a todo API",
+  "isCompleted": true
+}
+
+### Delete a todo
+DELETE {{todo_app_HostAddress}}/api/todos/1
