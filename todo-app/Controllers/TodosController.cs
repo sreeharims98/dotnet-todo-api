@@ -25,33 +25,27 @@ namespace todo_app.Controllers
         }
 
         [HttpPost]
-        public ActionResult<TodoItem> Create(TodoItem todo)
+        public ActionResult<TodoItem> Create(CreateTodoRequest request)
         {
-            if (string.IsNullOrWhiteSpace(todo.Title))
+            var todo = new TodoItem
             {
-                ModelState.AddModelError(nameof(todo.Title), "Title is required");
-                return ValidationProblem(ModelState);
-            }
+                Id = _nextId,
+                Title = request.Title,
+                Description = request.Description
+            };
 
-            todo.Id = _nextId;
             _nextId = _nextId + 1;
             Todos.Add(todo);
+
             return CreatedAtAction(nameof(GetById), new { id = todo.Id }, todo);
 
         }
 
         [HttpPut("{id}")]
-        public ActionResult<TodoItem> Update(int id, TodoItem todoData)
+        public ActionResult<TodoItem> Update(int id, UpdateTodoRequest todoData)
         {
-            if (string.IsNullOrWhiteSpace(todoData.Title))
-            {
-                ModelState.AddModelError(nameof(todoData.Title), "Title is required");
-                return ValidationProblem(ModelState);
-            }
-
             var todo = Todos.FirstOrDefault(t => t.Id == id);
             if (todo == null) return NotFound();
-
 
             todo.Title = todoData.Title;
             todo.Description = todoData.Description;
